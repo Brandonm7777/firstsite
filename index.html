@@ -1,50 +1,589 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brandon's Simple Webpage</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 0;
-            text-align: center;
-        }
-        main {
-            padding: 20px;
-        }
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Binaural Beats • Focus & Flow</title>
+<style>
+  :root{
+    --bg1:#0b0f19;
+    --bg2:#101631;
+    --glass:#ffffff14;
+    --glass-strong:#ffffff22;
+    --text:#e9ecff;
+    --muted:#b9c0ffbb;
+    --accent:#8a7dff;
+    --accent-2:#5bd6ff;
+    --danger:#ff6b6b;
+    --ok:#62ffa6;
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+    --radius:18px;
+    --radius-sm:12px;
+    --blur:18px;
+    --speed:.25s;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(1200px 800px at -10% -10%, #2a1b66 0%, transparent 60%),
+      radial-gradient(1000px 700px at 110% 110%, #043c64 0%, transparent 60%),
+      linear-gradient(160deg, var(--bg1), var(--bg2));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px;
+  }
+
+  .app{
+    width:clamp(320px, 92vw, 980px);
+    border-radius:var(--radius);
+    background:linear-gradient(180deg, #ffffff0a, #ffffff05);
+    backdrop-filter: blur(var(--blur)) saturate(120%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(120%);
+    box-shadow: var(--shadow), inset 0 1px 0 #ffffff14;
+    border:1px solid #ffffff1a;
+    overflow:hidden;
+  }
+
+  header{
+    padding:22px 22px 14px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    border-bottom:1px solid #ffffff18;
+    background:linear-gradient(180deg, #ffffff10, #ffffff05);
+  }
+  .logo{
+    width:42px;height:42px;border-radius:12px;
+    background:
+      radial-gradient(60% 60% at 30% 30%, #fff3 0%, #fff0 60%),
+      linear-gradient(135deg, var(--accent), var(--accent-2));
+    display:grid;place-items:center;
+    box-shadow: inset 0 1px 0 #ffffff55, 0 8px 20px #4b5cff55;
+  }
+  .logo span{font-weight:800;color:#0a0d1a}
+  h1{
+    font-size: clamp(18px, 2.2vw, 24px);
+    margin:0;
+    letter-spacing:.3px;
+  }
+  .sub{
+    color:var(--muted); font-size: 13px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap:18px;
+    padding:18px;
+  }
+  @media (max-width: 840px){
+    .grid{grid-template-columns: 1fr}
+  }
+
+  .card{
+    background: linear-gradient(180deg, #ffffff10, #ffffff06);
+    border:1px solid #ffffff12;
+    border-radius:var(--radius-sm);
+    box-shadow: var(--shadow), inset 0 1px 0 #ffffff10;
+    padding:16px;
+  }
+  .card h2{
+    margin:0 0 10px 0; font-size:16px; letter-spacing:.2px; color:#f3f5ff;
+  }
+
+  .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+  .row + .row{margin-top:10px}
+
+  label{font-size:13px; color:var(--muted)}
+  input[type="number"]{
+    width:110px; padding:10px 12px; border-radius:12px; border:1px solid #ffffff20;
+    background:#0f1433a8; color:var(--text); outline:none;
+    transition:border var(--speed), box-shadow var(--speed), background var(--speed);
+  }
+  input[type="number"]:focus{border-color:#aab1ff55; box-shadow: 0 0 0 4px #7b85ff22}
+
+  button, .btn{
+    cursor:pointer; user-select:none;
+    border:none; border-radius:14px; padding:11px 14px; font-weight:600;
+    background:linear-gradient(135deg, #6a5dff, #45c6ff);
+    color:#0b0f19; letter-spacing:.2px; box-shadow: 0 10px 22px #284bff55;
+    transition: transform var(--speed), filter var(--speed), opacity var(--speed);
+  }
+  button.ghost{
+    background: #ffffff12; color:var(--text); box-shadow:none; border:1px solid #ffffff20;
+  }
+  button:disabled{opacity:.5; cursor:not-allowed; filter:grayscale(.2)}
+  button:active{transform: translateY(1px)}
+  .pill{padding:8px 12px;border-radius:999px;font-size:12px}
+
+  .preset-wrap{display:flex; gap:8px; flex-wrap:wrap}
+  .preset{background:#ffffff12; color:var(--text); border:1px solid #ffffff1e}
+  .preset.active{outline:2px solid #7d88ff; background:#8a7dff22}
+
+  .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .controls .btn-wide{min-width:120px}
+
+  input[type="range"]{
+    -webkit-appearance:none; appearance:none;
+    width:min(380px, 100%); height:28px; background:transparent;
+  }
+  input[type="range"]::-webkit-slider-runnable-track{
+    height:6px; background:linear-gradient(90deg, #6b5fff, #42cfff); border-radius:999px;
+    box-shadow: inset 0 1px 0 #ffffff66;
+  }
+  input[type="range"]::-moz-range-track{
+    height:6px; background:linear-gradient(90deg, #6b5fff, #42cfff); border-radius:999px;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none; margin-top:-10px; width:26px; height:26px;
+    border-radius:50%; background:#0b0f19; border:2px solid #9fb3ff; box-shadow: 0 4px 12px #284bff66;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:26px; height:26px; border-radius:50%; background:#0b0f19; border:2px solid #9fb3ff;
+  }
+
+  .stat{
+    display:flex; justify-content:space-between; align-items:center;
+    background:#ffffff0f; border:1px solid #ffffff16; border-radius:12px; padding:10px 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .stat b{font-size:14px}
+
+  .tips{
+    font-size:13px; color:var(--muted); line-height:1.5;
+    background:#0e133180; border:1px dashed #7b85ff55; padding:12px; border-radius:12px;
+  }
+
+  footer{
+    padding:12px 18px; border-top:1px solid #ffffff18; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    font-size:12px; color:var(--muted);
+    background:linear-gradient(180deg, #ffffff05, #00000000);
+  }
+
+  .toast{
+    position: fixed; left:50%; bottom:22px; transform: translateX(-50%) translateY(20px);
+    background:#0b0f19; border:1px solid #ffffff22; color:var(--text);
+    padding:10px 14px; border-radius:12px; box-shadow: var(--shadow);
+    opacity:0; pointer-events:none; transition: all .35s ease;
+  }
+  .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
+  .badge{border-radius:999px; padding:4px 8px; font-size:11px; border:1px solid #ffffff25; background:#ffffff10}
+  .badge.ok{border-color:#00ffb466; background:#00ffc21a; color:#b8ffe1}
+  .badge.err{border-color:#ff7b7b66; background:#ff7b7b1a; color:#ffd3d3}
+
+  .loading{
+    display:inline-flex; align-items:center; gap:8px; opacity:.85
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:#9fb3ff;animation:b 1s infinite ease-in-out}
+  .dot:nth-child(2){animation-delay:.12s}
+  .dot:nth-child(3){animation-delay:.24s}
+  @keyframes b{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+</style>
 </head>
 <body>
+  <div class="app" role="application" aria-label="Binaural Beats Generator">
+    <header>
+      <div class="logo" aria-hidden="true"><span>β</span></div>
+      <div>
+        <h1>Binaural Beats — Focus & Flow</h1>
+        <div class="sub">Pure sine waves • Stereo-panned oscillators • Smooth fade • Works offline</div>
+      </div>
+    </header>
 
-<header>
-    <h1>Brandon's Simple Webpage</h1>
-</header>
+    <div class="grid">
+      <!-- Left column: controls -->
+      <section class="card" aria-labelledby="controlsTitle">
+        <h2 id="controlsTitle">Audio Controls</h2>
 
-<main>
-    <p>Welcome to my first simple webpage. I think im going to make a couple sites but, this one will probably be used for resume building and just idk random stuff, maybe ill use for testing or what not.</p>
-    <p>working progress, i love this sht</p>
-</main>
+        <div class="row controls" style="margin-bottom:10px">
+          <button id="playBtn" class="btn-wide" aria-pressed="false">▶️ Start</button>
+          <button id="stopBtn" class="ghost">⏹️ Stop</button>
+          <button id="muteBtn" class="ghost pill" aria-pressed="false">🔇 Mute</button>
+          <span class="badge" id="stateBadge">idle</span>
+        </div>
 
-<footer>
-    <p>&copy; 2025 My Simple Webpage</p>
-</footer>
+        <div class="row" aria-label="Volume Control">
+          <label for="vol">Volume (max 70%)</label>
+          <input id="vol" type="range" min="0" max="70" value="40" />
+          <span id="volVal" class="badge">40%</span>
+        </div>
 
+        <div class="row" style="margin-top:16px">
+          <div class="stat" style="flex:1">
+            <span>Left (Hz)</span>
+            <input id="leftHz" type="number" min="20" max="1000" step="1" value="200" />
+          </div>
+          <div class="stat" style="flex:1">
+            <span>Right (Hz)</span>
+            <input id="rightHz" type="number" min="20" max="1000" step="1" value="210" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div class="stat" style="flex:1">
+            <span>Beat Δ</span>
+            <b id="beatHz">10 Hz</b>
+          </div>
+          <div class="stat" style="flex:1">
+            <span>Status</span>
+            <b id="audioStatus">Not started</b>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:14px">
+          <div class="preset-wrap" role="group" aria-label="Presets">
+            <button class="preset pill" data-l="200" data-r="210" title="10 Hz beat">Deep Focus 200/210</button>
+            <button class="preset pill" data-l="180" data-r="188" title="8 Hz beat">Creative Flow 180/188</button>
+            <button class="preset pill" data-l="200" data-r="220" title="20 Hz beat">Mental Alertness 200/220</button>
+            <button class="preset pill" data-l="160" data-r="172" title="12 Hz beat">Study Mode 160/172</button>
+          </div>
+        </div>
+
+        <div class="tips" style="margin-top:14px">
+          <b>Usage & Safety</b><br>
+          • Headphones required (binaural effect needs separate left/right signals).<br>
+          • Start at low volume; we cap volume at <b>70%</b>. Increase gradually to comfort.<br>
+          • Typical sessions: <b>15–30 minutes</b>.<br>
+          • If you feel discomfort, stop immediately. Not a medical device.<br>
+          • Some browsers block audio until you press “Start” (user gesture).
+        </div>
+      </section>
+
+      <!-- Right column: readouts / help -->
+      <section class="card" aria-labelledby="displayTitle">
+        <h2 id="displayTitle">Display</h2>
+
+        <div class="row">
+          <div class="stat" style="flex:1">
+            <span>Current Left</span>
+            <b id="dispL">200 Hz</b>
+          </div>
+          <div class="stat" style="flex:1">
+            <span>Current Right</span>
+            <b id="dispR">210 Hz</b>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div class="stat" style="flex:1">
+            <span>Calculated Beat</span>
+            <b id="dispBeat">10 Hz</b>
+          </div>
+          <div class="stat" style="flex:1">
+            <span>Channel Panning</span>
+            <b>Left = -1 • Right = +1</b>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:16px">
+          <div class="loading" id="loader" hidden>
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            <span>Initializing audio…</span>
+          </div>
+          <span id="errorBox" class="badge err" hidden>—</span>
+        </div>
+
+        <div class="tips" style="margin-top:14px">
+          <b>What is beat frequency?</b><br>
+          It’s the absolute difference between the left and right tones (|L–R|). Your brain may perceive this
+          as a rhythmic “beat” when using headphones.
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div>Pure sine • Web Audio API • Clean start/stop • Gentle fade</div>
+      <div id="footerState">Ready</div>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">Message</div>
+
+<script>
+(() => {
+  // --- State & Essentials ----------------------------------------------------
+  let ctx = null;
+  let leftOsc = null, rightOsc = null;
+  let leftGain = null, rightGain = null;
+  let leftPan = null, rightPan = null;
+  let masterGain = null;
+
+  let playing = false;
+  let muted = false;
+  const MAX_VOL = 0.70;        // hard cap 70%
+  const FADE_TIME = 0.5;       // seconds
+  const SMOOTH = 0.07;         // param smoothing
+
+  // --- DOM -------------------------------------------------------------------
+  const $ = (sel) => document.querySelector(sel);
+  const playBtn   = $("#playBtn");
+  const stopBtn   = $("#stopBtn");
+  const muteBtn   = $("#muteBtn");
+  const vol       = $("#vol");
+  const volVal    = $("#volVal");
+  const leftHz    = $("#leftHz");
+  const rightHz   = $("#rightHz");
+  const stateBadge= $("#stateBadge");
+  const audioStatus=$("#audioStatus");
+  const beatHz    = $("#beatHz");
+  const dispL     = $("#dispL");
+  const dispR     = $("#dispR");
+  const dispBeat  = $("#dispBeat");
+  const loader    = $("#loader");
+  const errorBox  = $("#errorBox");
+  const footerState=$("#footerState");
+  const toast     = $("#toast");
+
+  const presets = [...document.querySelectorAll(".preset")];
+
+  // --- Helpers ---------------------------------------------------------------
+  function clamp(val, min, max){ return Math.min(max, Math.max(min, val)); }
+  function uiUpdate(){
+    const l = Number(leftHz.value||0), r = Number(rightHz.value||0);
+    const beat = Math.abs(l - r);
+    beatHz.textContent = beat + " Hz";
+    dispL.textContent = l + " Hz";
+    dispR.textContent = r + " Hz";
+    dispBeat.textContent = beat + " Hz";
+  }
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(()=> toast.classList.remove("show"), 1800);
+  }
+  function showError(msg){
+    errorBox.hidden = false;
+    errorBox.textContent = msg;
+    footerState.textContent = "Error: " + msg;
+  }
+  function clearError(){
+    errorBox.hidden = true;
+    errorBox.textContent = "";
+  }
+  function setBadge(txt, ok=false){
+    stateBadge.textContent = txt;
+    stateBadge.className = "badge " + (ok ? "ok" : "");
+  }
+  function now(){ return ctx ? ctx.currentTime : 0; }
+
+  // --- Audio Graph -----------------------------------------------------------
+  function createContext(){
+    if (!ctx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      ctx = new AC({ latencyHint: "interactive" });
+    }
+  }
+
+  function buildGraph(){
+    // Create nodes
+    masterGain = ctx.createGain();
+    masterGain.gain.value = (Number(vol.value)/100) * MAX_VOL;
+
+    leftOsc = ctx.createOscillator();
+    rightOsc = ctx.createOscillator();
+    leftOsc.type = "sine";
+    rightOsc.type= "sine";
+
+    leftGain = ctx.createGain();
+    rightGain= ctx.createGain();
+    leftGain.gain.value = 0;
+    rightGain.gain.value= 0;
+
+    leftPan = ctx.createStereoPanner();
+    rightPan= ctx.createStereoPanner();
+    leftPan.pan.value = -1;
+    rightPan.pan.value = +1;
+
+    // Connect L chain
+    leftOsc.connect(leftGain).connect(leftPan).connect(masterGain);
+    // Connect R chain
+    rightOsc.connect(rightGain).connect(rightPan).connect(masterGain);
+
+    masterGain.connect(ctx.destination);
+
+    // Set initial frequencies with smoothing
+    const l = clamp(Number(leftHz.value), 20, 1000);
+    const r = clamp(Number(rightHz.value), 20, 1000);
+
+    leftOsc.frequency.setValueAtTime(l, now());
+    rightOsc.frequency.setValueAtTime(r, now());
+
+    // Start oscillators
+    leftOsc.start();
+    rightOsc.start();
+  }
+
+  function startAudio(){
+    try{
+      clearError();
+      createContext();
+
+      // Some browsers require resume() inside user gesture
+      if (ctx.state === "suspended"){ ctx.resume(); }
+
+      buildGraph();
+
+      // Fade in
+      const t = now();
+      leftGain.gain.cancelScheduledValues(t);
+      rightGain.gain.cancelScheduledValues(t);
+      leftGain.gain.setValueAtTime(0, t);
+      rightGain.gain.setValueAtTime(0, t);
+      leftGain.gain.linearRampToValueAtTime(1.0, t + FADE_TIME);
+      rightGain.gain.linearRampToValueAtTime(1.0, t + FADE_TIME);
+
+      playing = true;
+      setBadge("playing", true);
+      audioStatus.textContent = "Playing";
+      footerState.textContent = "Audio running";
+      playBtn.textContent = "⏸️ Pause";
+      playBtn.setAttribute("aria-pressed", "true");
+      loader.hidden = true;
+      showToast("Playing");
+    }catch(e){
+      showError(e.message || "Could not start audio");
+    }
+  }
+
+  function pauseAudio(){
+    if (!ctx) return;
+    // Gentle fade-out then suspend
+    const t = now();
+    leftGain?.gain.cancelScheduledValues(t);
+    rightGain?.gain.cancelScheduledValues(t);
+    leftGain?.gain.linearRampToValueAtTime(0, t + FADE_TIME);
+    rightGain?.gain.linearRampToValueAtTime(0, t + FADE_TIME);
+
+    setTimeout(async ()=>{
+      try{
+        await ctx.suspend();
+      }catch{}
+      playing = false;
+      setBadge("paused");
+      audioStatus.textContent = "Paused";
+      footerState.textContent = "Audio paused";
+      playBtn.textContent = "▶️ Resume";
+      playBtn.setAttribute("aria-pressed", "false");
+      showToast("Paused");
+    }, FADE_TIME * 1000);
+  }
+
+  function stopAudio(){
+    if (!ctx) return;
+    const t = now();
+    leftGain?.gain.setTargetAtTime(0, t, 0.05);
+    rightGain?.gain.setTargetAtTime(0, t, 0.05);
+
+    // Stop & disconnect after short fade
+    setTimeout(async ()=>{
+      try{
+        leftOsc?.stop(); rightOsc?.stop();
+      }catch{}
+      [leftOsc, rightOsc, leftGain, rightGain, leftPan, rightPan].forEach(n=>{
+        try{ n?.disconnect(); }catch{}
+      });
+      try{ masterGain?.disconnect(); }catch{}
+
+      leftOsc = rightOsc = leftGain = rightGain = leftPan = rightPan = masterGain = null;
+
+      try{ await ctx.suspend(); }catch{}
+      playing = false;
+      setBadge("idle");
+      audioStatus.textContent = "Stopped";
+      playBtn.textContent = "▶️ Start";
+      playBtn.setAttribute("aria-pressed", "false");
+      footerState.textContent = "Stopped & cleaned";
+      showToast("Stopped");
+    }, 180);
+  }
+
+  // --- Events ----------------------------------------------------------------
+  function validateAndApply(inputEl){
+    let v = Number(inputEl.value);
+    if (Number.isNaN(v)) v = 200;
+    v = clamp(Math.round(v), 20, 1000);
+    inputEl.value = v;
+
+    if (leftOsc && rightOsc && playing && ctx?.state === "running"){
+      const t = now();
+      if (inputEl === leftHz){
+        leftOsc.frequency.setTargetAtTime(v, t, SMOOTH);
+      }else{
+        rightOsc.frequency.setTargetAtTime(v, t, SMOOTH);
+      }
+    }
+    uiUpdate();
+  }
+
+  leftHz.addEventListener("change", ()=> validateAndApply(leftHz));
+  rightHz.addEventListener("change", ()=> validateAndApply(rightHz));
+  leftHz.addEventListener("input", uiUpdate);
+  rightHz.addEventListener("input", uiUpdate);
+
+  vol.addEventListener("input", ()=>{
+    const pct = Number(vol.value);
+    volVal.textContent = pct + "%";
+    if (masterGain){
+      const gain = (pct/100) * MAX_VOL;
+      masterGain.gain.setTargetAtTime(gain, now(), 0.05);
+    }
+  });
+
+  muteBtn.addEventListener("click", ()=>{
+    muted = !muted;
+    muteBtn.setAttribute("aria-pressed", String(muted));
+    muteBtn.textContent = muted ? "🔈 Unmute" : "🔇 Mute";
+    if (!masterGain) return;
+    const target = muted ? 0 : (Number(vol.value)/100) * MAX_VOL;
+    masterGain.gain.setTargetAtTime(target, now(), 0.03);
+    showToast(muted ? "Muted" : "Unmuted");
+  });
+
+  playBtn.addEventListener("click", async ()=>{
+    try{
+      if (!ctx){ loader.hidden = false; }
+      if (!playing){
+        if (ctx?.state === "suspended"){ await ctx.resume(); }
+        startAudio();
+      }else{
+        pauseAudio();
+      }
+    }catch(e){
+      loader.hidden = true;
+      showError(e.message || "Playback error");
+    }
+  });
+
+  stopBtn.addEventListener("click", stopAudio);
+
+  presets.forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      presets.forEach(b=> b.classList.remove("active"));
+      btn.classList.add("active");
+      leftHz.value  = btn.dataset.l;
+      rightHz.value = btn.dataset.r;
+      uiUpdate();
+      validateAndApply(leftHz);
+      validateAndApply(rightHz);
+      showToast(`Preset: ${btn.textContent.trim()}`);
+    });
+  });
+
+  // Keyboard a11y: Space triggers primary button
+  document.addEventListener("keydown", (e)=>{
+    if (e.code === "Space" && document.activeElement === document.body){
+      e.preventDefault();
+      playBtn.click();
+    }
+  });
+
+  // Initial UI sync
+  uiUpdate();
+  setBadge("idle");
+})();
+</script>
 </body>
 </html>
